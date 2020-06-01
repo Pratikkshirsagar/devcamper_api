@@ -7,8 +7,50 @@ const Bootcamp = require('../models/Bootcamp');
 // * @route GET  /api/v1/bootcamps
 // * @access Public
 exports.getBootcamps = asyncHandler(async (req, res, next) => {
-  const bootcamp = await Bootcamp.find();
-  res.status(200).json({ success: true, data: bootcamp });
+  let query;
+
+  // * Copy request query
+  const reqQuery = { ...req.query };
+
+  console.log(reqQuery);
+
+  // * Fields to remove
+  const removeFields = ['select', 'sort'];
+
+  // * Loop over fields and deleting them from reqQuery
+  removeFields.forEach((param) => delete reqQuery[param]);
+
+  // * create query string
+  let queryStr = JSON.stringify(reqQuery);
+
+  // * Creating operaters ($gt, $gte, etc)
+  queryStr = queryStr.replace(
+    /\b(gt|gte|lt|lte|in)\b/g,
+    (match) => `$${match}`
+  );
+
+  // * Finding resorce
+  query = Bootcamp.find(JSON.parse(queryStr));
+
+  if (req.query.select) {
+    const fields = req.query.select.split(',').join(' ');
+    query = query.select(fields);
+  }
+
+  // * sort
+  if (req.query.sort) {
+    const sortBy = req.query.sort.split(',').join(' ');
+    query = query.sort(sortBy);
+  } else {
+    query = query.sort('-createdAt');
+  }
+
+  // * Executing query
+  const bootcamps = await query;
+
+  res
+    .status(200)
+    .json({ success: true, count: bootcamps.length, data: bootcamps });
 });
 
 // * @desc  Get single Bootcamps
