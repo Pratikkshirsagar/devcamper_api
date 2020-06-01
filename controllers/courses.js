@@ -9,8 +9,8 @@ const Course = require('../models/Course');
 exports.getCourses = asyncHandler(async (req, res, next) => {
   let query;
 
-  if (req.param.bootcamoId) {
-    query = Course.find({ bootcamp: req.param.bootcamoId });
+  if (req.params.bootcampId) {
+    query = Course.find({ bootcamp: req.params.bootcampId });
   } else {
     query = Course.find();
   }
