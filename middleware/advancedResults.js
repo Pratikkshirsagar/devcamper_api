@@ -4,8 +4,6 @@ const advancedResults = (model, populate) => async (req, res, next) => {
   // * Copy request query
   const reqQuery = { ...req.query };
 
-  console.log(reqQuery);
-
   // * Fields to remove
   const removeFields = ['select', 'sort', 'page', 'limit'];
 
