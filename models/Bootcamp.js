@@ -1,8 +1,8 @@
-const moongoose = require('mongoose');
+const mongoose = require('mongoose');
 const slugify = require('slugify');
 const geocoder = require('../utils/geocode');
 
-const BootcampSchema = new moongoose.Schema(
+const BootcampSchema = new mongoose.Schema(
   {
     name: {
       type: String,
@@ -99,6 +99,11 @@ const BootcampSchema = new moongoose.Schema(
       type: Date,
       default: Date.now,
     },
+    user: {
+      type: mongoose.Schema.ObjectId,
+      ref: 'User',
+      required: true,
+    },
   },
   {
     toJSON: { virtuals: true },
@@ -145,4 +150,4 @@ BootcampSchema.virtual('courses', {
   justOne: false,
 });
 
-module.exports = moongoose.model('Bootcamp', BootcampSchema);
+module.exports = mongoose.model('Bootcamp', BootcampSchema);
