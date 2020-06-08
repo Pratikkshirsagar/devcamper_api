@@ -8,6 +8,7 @@ const helmet = require('helmet');
 const xss = require('xss-clean');
 const rateLimit = require('express-rate-limit');
 const hpp = require('hpp');
+var cors = require('cors');
 const fileupload = require('express-fileupload');
 const cookieParser = require('cookie-parser');
 const errorHandler = require('./middleware/error');
@@ -48,7 +49,7 @@ app.use(mongoSanitize());
 app.use(helmet());
 
 // Rating limiting
-const limit = rate.limit({
+const limiter = rateLimit({
   windowMs: 15 * 60 * 1000, // 15 minutes
   max: 100, // limit each IP to 100 requests per windowMs
 });
@@ -58,6 +59,9 @@ app.use(limiter);
 
 // prevent http param pollution
 app.use(hpp());
+
+// Enable CORSE
+app.use(cors());
 
 // prevent XSS attacks
 app.use(xss());
